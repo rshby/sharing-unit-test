@@ -3,7 +3,7 @@ package mock
 import (
 	"context"
 	"github.com/stretchr/testify/mock"
-	"sharingunittest/account"
+	entity "sharingunittest/account"
 	"sync"
 )
 
@@ -11,7 +11,7 @@ type AccountRepoMock struct {
 	Mock mock.Mock
 }
 
-func (a *AccountRepoMock) Insert(ctx context.Context, input *account.Account) (*account.Account, error) {
+func (a *AccountRepoMock) Insert(ctx context.Context, input *entity.Account) (*entity.Account, error) {
 	args := a.Mock.Called(ctx, input)
 	acc := args.Get(0)
 
@@ -19,14 +19,16 @@ func (a *AccountRepoMock) Insert(ctx context.Context, input *account.Account) (*
 		return nil, args.Error(1)
 	}
 
-	return acc.(*account.Account), nil
+	return acc.(*entity.Account), nil
 }
 
-func (a *AccountRepoMock) GetByid(ctx context.Context, wg *sync.WaitGroup, email string, chanRes chan account.Account, chanErr chan error) {
+func (a *AccountRepoMock) GetByid(ctx context.Context, wg *sync.WaitGroup, email string, chanRes chan entity.Account, chanErr chan error) {
 	wg.Add(1)
 	defer wg.Done()
 
-	arg := a.Mock.Called(ctx, wg, email, chanRes, chanErr)
-	chanRes <- arg.Get(0).(account.Account)
-	chanErr <- arg.Error(1)
+	args := a.Mock.Called(ctx, wg, email, chanRes, chanErr)
+
+	chanRes <- args.Get(0).(entity.Account)
+	chanErr <- args.Error(1)
+
 }

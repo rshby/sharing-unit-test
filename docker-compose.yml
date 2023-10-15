@@ -1,0 +1,23 @@
+version: "3.8"
+
+networks:
+  ut-network:
+    driver: bridge
+    name: ut-network
+
+#service
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger_ut
+    networks:
+      - ut-network
+    ports:
+      - target: 16686
+        published: 16686
+        protocol: tcp
+        mode: host
+      - target: 6831
+        published: 6831
+        protocol: udp
+        mode: host

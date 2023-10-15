@@ -3,12 +3,14 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/opentracing/opentracing-go"
 	"log"
 	accountHandler "sharingunittest/account/handler"
 	accRepository "sharingunittest/account/repository"
 	accService "sharingunittest/account/service"
 	database "sharingunittest/database/connection"
 	"sharingunittest/router"
+	"sharingunittest/tracing"
 )
 
 func init() {
@@ -21,6 +23,11 @@ func init() {
 
 func main() {
 	db := database.CreateConnectionDB()
+
+	// register jaeger
+	tracer, closer := tracing.ConnectJaeger("ut-service")
+	defer closer.Close()
+	opentracing.SetGlobalTracer(tracer)
 
 	// register repository
 	accRepo := accRepository.NewAccountRepository(db)

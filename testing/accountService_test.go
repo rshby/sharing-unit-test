@@ -57,6 +57,23 @@ func TestInsert(t *testing.T) {
 		assert.Nil(t, res)
 		assert.Equal(t, "email already exist", err.Error())
 	})
+	t.Run("test error insert email not in format", func(t *testing.T) {
+		accRepo := mck.AccountRepoMock{mock.Mock{}}
+		accService := account.NewAccountService(&accRepo)
+
+		accRepo.Mock.On("Insert", mock.Anything, mock.Anything).Return(nil, errors.New("email not in format")).Times(1)
+
+		res, err := accService.Insert(context.Background(), &dto.InsertAccountRequest{
+			Email:    "",
+			Username: "",
+			Password: "",
+		})
+
+		assert.Nil(t, res)
+		assert.NotNil(t, err)
+		assert.Error(t, err)
+		accRepo.Mock.AssertExpectations(t)
+	})
 }
 
 // func Test Get By Email
