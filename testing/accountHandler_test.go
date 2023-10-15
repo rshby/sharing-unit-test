@@ -31,7 +31,7 @@ func TestHandlerInsert(t *testing.T) {
 			Email:    reqBody.Email,
 			Username: reqBody.Username,
 			Password: reqBody.Password,
-		}, nil)
+		}, nil).Times(1)
 
 		router := gin.Default()
 		router.Handle(http.MethodPost, "/account", accHandler.Insert)
@@ -47,5 +47,6 @@ func TestHandlerInsert(t *testing.T) {
 		// get response
 		response := recorder.Result()
 		assert.Equal(t, http.StatusOK, response.StatusCode)
+		accService.Mock.AssertExpectations(t)
 	})
 }
