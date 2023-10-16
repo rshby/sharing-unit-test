@@ -22,6 +22,11 @@ func (a *AccountServiceMock) Insert(ctx context.Context, request *dto.InsertAcco
 }
 
 func (a *AccountServiceMock) GetById(ctx context.Context, request *dto.GetAccountRequest) ([]account.Account, error) {
-	//TODO implement me
-	panic("implement me")
+	args := a.Mock.Called(ctx, request)
+	acc := args.Get(0)
+	if acc == nil {
+		return nil, args.Error(1)
+	}
+
+	return acc.([]account.Account), nil
 }

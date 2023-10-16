@@ -44,13 +44,6 @@ func (a *AccountHandler) Insert(c *gin.Context) {
 			})
 			return
 		}
-
-		c.JSON(statusCode, &dto.ApiResponse{
-			StatusCode: statusCode,
-			Status:     helper.GenerateStatusFromCode(statusCode),
-			Message:    err.Error(),
-		})
-		return
 	}
 
 	// call insert in service
